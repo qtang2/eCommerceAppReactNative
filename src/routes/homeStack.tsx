@@ -2,7 +2,7 @@
  * @Author: qian.tang
  * @Date: 2023-11-18 20:48:21
  * @LastEditors: Qian Tang qian@itrazotracetech.com
- * @LastEditTime: 2023-11-18 20:49:21
+ * @LastEditTime: 2023-11-18 21:06:51
  * @FilePath: /myRNProject/src/routes/homeStack.tsx
  * @Description: 
  * 
@@ -10,7 +10,6 @@
  */
 
 import React, {useState} from 'react';
-import Entypo from 'react-native-vector-icons/Entypo';
 
 import HomeScreen from '../screens/HomeScreen';
 import ProductScreen from '../screens/ProductScreen';

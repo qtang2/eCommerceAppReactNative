@@ -2,7 +2,7 @@
  * @Author: qian.tang
  * @Date: 2023-11-12 22:52:27
  * @LastEditors: Qian Tang qian@itrazotracetech.com
- * @LastEditTime: 2023-11-17 22:00:14
+ * @LastEditTime: 2023-11-22 21:00:40
  * @FilePath: /myRNProject/src/components/ProductItem/index.tsx
  * @Description:
  *
@@ -13,23 +13,16 @@ import React from 'react';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import styles from './styles';
 import {useNavigation} from '@react-navigation/native';
+import { Product } from '../../models';
 
 interface ProductItemProps {
-  item: {
-    id: string;
-    title: string;
-    image: string;
-    avgRating: number;
-    ratings: number;
-    price: number;
-    oldPrice?: number;
-  };
+  item: Product;
 }
 const ProductItem = (props: ProductItemProps) => {
   const {item} = props;
   const navigation = useNavigation();
   const onPress = () => {
-    console.log(' onPress');
+    console.log(' onPress', item.id);
     navigation.navigate('ProductDetails', {id: item.id});
   };
   return (

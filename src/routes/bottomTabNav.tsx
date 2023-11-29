@@ -2,7 +2,7 @@
  * @Author: qian.tang
  * @Date: 2023-11-16 23:49:51
  * @LastEditors: Qian Tang qian@itrazotracetech.com
- * @LastEditTime: 2023-11-17 22:03:47
+ * @LastEditTime: 2023-11-20 22:12:35
  * @FilePath: /myRNProject/src/routes/bottomTabNav.tsx
  * @Description:
  *
@@ -17,6 +17,7 @@ import HomeScreen from '../screens/HomeScreen';
 import ProductScreen from '../screens/ProductScreen';
 import HomeStackNav from './homeStack';
 import ShoppingCartStackNav from './shoppingCartStack';
+import MenuScreen from '../screens/MenuScreen';
 
 const Tab = createBottomTabNavigator();
 
@@ -63,6 +64,15 @@ function BottomTabNav() {
           options={{
             tabBarIcon: ({color}) => (
               <Entypo name="menu" size={19} color={color} />
+            ),
+          }}
+        />
+        <Tab.Screen
+          name="menu"
+          component={MenuScreen}
+          options={{
+            tabBarIcon: ({color}) => (
+              <Entypo name="star" size={19} color={color} />
             ),
           }}
         />

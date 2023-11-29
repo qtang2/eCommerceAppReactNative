@@ -2,7 +2,7 @@
  * @Author: qian.tang
  * @Date: 2023-11-11 22:48:00
  * @LastEditors: Qian Tang qian@itrazotracetech.com
- * @LastEditTime: 2023-11-17 21:25:26
+ * @LastEditTime: 2023-11-20 21:54:35
  * @FilePath: /myRNProject/App.tsx
  * @Description:
  *
@@ -21,6 +21,14 @@ import {SafeAreaView, StatusBar, useColorScheme} from 'react-native';
 import {Colors} from 'react-native/Libraries/NewAppScreen';
 import Router from './src/routes';
 
+import {Amplify} from 'aws-amplify';
+import amplifyconfig from './src/amplifyconfiguration.json';
+import {
+  withAuthenticator,
+  useAuthenticator
+} from '@aws-amplify/ui-react-native';
+Amplify.configure(amplifyconfig);
+
 function App(): JSX.Element {
   const isDarkMode = useColorScheme() === 'dark';
 
@@ -28,7 +36,7 @@ function App(): JSX.Element {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
     flex: 1,
   };
-  
+
   return (
     <SafeAreaView style={backgroundStyle}>
       <StatusBar
@@ -44,4 +52,4 @@ function App(): JSX.Element {
   );
 }
 
-export default App;
+export default withAuthenticator(App);

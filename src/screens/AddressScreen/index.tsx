@@ -2,7 +2,7 @@
  * @Author: qian.tang
  * @Date: 2023-11-15 21:48:32
  * @LastEditors: Qian Tang qian@itrazotracetech.com
- * @LastEditTime: 2023-11-16 23:40:17
+ * @LastEditTime: 2023-11-29 22:05:37
  * @FilePath: /myRNProject/src/screens/AddressScreen/index.tsx
  * @Description:
  *
@@ -10,15 +10,28 @@
  */
 import {Picker} from '@react-native-picker/picker';
 import React, {useState} from 'react';
-import {Alert, KeyboardAvoidingView, Platform, ScrollView, Text, TextInput, View} from 'react-native';
+import {
+  Alert,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+  Text,
+  TextInput,
+  View,
+} from 'react-native';
 import countryList from 'country-list';
 import styles from './styles';
 import Button from '../../components/Button';
+import {DataStore} from 'aws-amplify/datastore';
+import {CartProduct, Order, OrderProduct} from '../../models';
+import {getCurrentUser} from 'aws-amplify/auth';
+import {useNavigation} from '@react-navigation/native';
 
 const countries = countryList.getData();
 
 function AddressScreen() {
-  console.log(countries);
+  // console.log(countries);
+  const navigation = useNavigation();
   const [country, setCountry] = useState<string>(countries[0].code);
   const [fullname, setFullname] = useState('');
   const [phone, setPhone] = useState('');
@@ -29,7 +42,7 @@ function AddressScreen() {
   const [city, setCity] = useState('');
   const [clientSecret, setClientSecret] = useState<string | null>(null);
 
-  const onCheckout = () => {
+  const onCheckout = async () => {
     if (!!addressError) {
       Alert.alert('Fix error before submit');
       return;
@@ -37,6 +50,49 @@ function AddressScreen() {
     if (!fullname) {
       Alert.alert('Please input full name');
       return;
+    }
+    try {
+      const userData = await getCurrentUser();
+
+      //  create new Order
+      const newOrder = await DataStore.save(
+        new Order({
+          userSub: userData.userId,
+          fullName: fullname,
+          phoneNumber: phone,
+          country,
+          city,
+          address,
+        }),
+      );
+      //  fetch all cart items belongs to user
+      const cartItems = await DataStore.query(CartProduct, c =>
+        c.userSub.eq(userData.userId),
+      );
+
+      // attach all cart product to an order/ create new ProductOrder
+      const promList = cartItems.map(item =>
+        DataStore.save(
+          new OrderProduct({
+            quantity: item['quantity'],
+            option: item['option'],
+
+            productID: item['productID'],
+
+            orderID: newOrder.id,
+          }),
+        ),
+      );
+
+      await Promise.all(promList);
+
+      // delete cartProduct
+      const delPromList = cartItems.map(item => DataStore.delete(item));
+      await Promise.all(delPromList);
+      // navigate to home
+      navigation.navigate('home');
+    } catch (error) {
+      console.log('error in save order', error);
     }
   };
   const validateAddress = () => {
